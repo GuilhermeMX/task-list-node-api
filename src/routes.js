@@ -6,9 +6,9 @@ const database = new Database();
 export const routes = [
   {
     method: 'GET',
-    path: '/users',
+    path: '/tasks',
     handler: (req, res) => {
-      const users = database.select('users')
+      const users = database.select('tasks')
 
       return res.end(JSON.stringify(users))
     }
