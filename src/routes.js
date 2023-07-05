@@ -7,7 +7,7 @@ const database = new Database();
 export const routes = [
   {
     method: 'GET',
-    path: '/tasks',
+    path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const tasks = database.select('tasks')
 
@@ -16,7 +16,7 @@ export const routes = [
   },
   {
     method: 'POST',
-    path: '/tasks',
+    path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const { title, description } = req.body;
 
@@ -24,6 +24,9 @@ export const routes = [
         id: randomUUID(),
         title,
         description,
+        completed_at: null,
+        created_at: new Date(),
+        updated_at: new Date(),
       }
 
       database.insert('tasks', task)
