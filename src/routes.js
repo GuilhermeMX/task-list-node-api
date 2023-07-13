@@ -33,7 +33,7 @@ export const routes = [
       
       const tasks = database.select('tasks', search ? {
         title: search,
-        description: search,
+        description: search, 
       } : null)
 
       return res.end(JSON.stringify(tasks))
@@ -58,6 +58,18 @@ export const routes = [
   {
     method: 'DELETE',
     path: buildRoutePath('/tasks/:id'),
-    handler: (req, res) => {},
+    handler: (req, res) => {
+      const { id } = req.params
+
+      const task = database.select('tasks', { id })
+
+      if (!task) {
+        return res.writeHead(404).end() 
+      }
+
+      database.delete('tasks', id)
+
+      return res.status(204).end()
+    },
   }
 ]
