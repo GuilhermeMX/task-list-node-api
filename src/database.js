@@ -42,7 +42,7 @@ export class Database {
       })
     }
 
-    return data;
+    return data
   }
 
   update(table, id, data) {
