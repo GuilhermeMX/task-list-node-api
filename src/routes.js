@@ -12,8 +12,15 @@ export const routes = [
       const { title, description } = req.body;
 
       if (!title) {
-        throw new Error('Title is required');
-        //return res.writeHead(404).end()
+        return res.writeHead(404).end(
+          JSON.stringify({ message: 'title is required' })
+        )
+      }
+
+      if (!description) {
+        return res.writeHead(404).end(
+          JSON.stringify({ message: 'description is required' })
+        )
       }
 
       const task = {
@@ -50,11 +57,23 @@ export const routes = [
     handler: (req, res) => {
       const { id } = req.params
       const { title, description } = req.body
+      
+      if (!title || !description) {
+        return res.writeHead(404).end(
+          JSON.stringify({ message:'title or description is required' })
+        )
+      }
+
+      const [task] = database.select('tasks', { id })
+
+      if (!task) {
+        return res.writeHead(404).end({ message: 'Task not found' })
+      }
 
       database.update('tasks', id, {
         title,
         description,
-        updated_at
+        updated_at: new Date()
       })
 
       return res.writeHead(204).end()
@@ -69,10 +88,29 @@ export const routes = [
       const [task] = database.select('tasks', { id })
 
       if (!task) {
-        return res.writeHead(404).end() 
+        return res.writeHead(404).end({ message: 'Task not found' }) 
       }
 
       database.delete('tasks', id)
+
+      return res.status(204).end()
+    },
+  },
+  {
+    method: 'PATCH',
+    path: buildRoutePath('/tasks/:id/complete'),
+    handler: (req, res) => {
+      const { id } = req.params
+
+      const [task] = database.select('tasks', { id })
+
+      if (!task) {
+        return res.writeHead(404).end({ message: 'Task not found' }) 
+      }
+
+      const isTaskCompleted = !!task.completed_at 
+
+      database.update('tasks', id, {})
 
       return res.status(204).end()
     },
