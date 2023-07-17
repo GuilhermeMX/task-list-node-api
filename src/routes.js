@@ -11,6 +11,11 @@ export const routes = [
     handler: (req, res) => {
       const { title, description } = req.body;
 
+      if (!title) {
+        throw new Error('Title is required');
+        //return res.writeHead(404).end()
+      }
+
       const task = {
         id: randomUUID(),
         title,
